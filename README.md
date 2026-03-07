@@ -55,6 +55,12 @@ npm start
 node server.js
 ```
 
+或 (在 home Projects 資料夾中進行開發測試)
+
+```bash
+cd ~/Projects/bible-copy-calming && NODE_ENV=development node server.js
+```
+
 預設於 http://localhost:3000 啟動。
 
 ### 5. 使用方式
