@@ -3,9 +3,19 @@ const router = express.Router();
 const crypto = require('crypto');
 const db = require('../db/database');
 const { parseCookies, requireParentAuth } = require('../middleware/auth');
+const { getToday, getTimezone, setTimezone } = require('../lib/dateUtils');
 
 const PARENT_PASSWORD = process.env.PARENT_PASSWORD || 'parent123';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'change-me-in-production';
+const TIMEZONE_OPTIONS = [
+  'Asia/Hong_Kong',
+  'Asia/Taipei',
+  'Asia/Shanghai',
+  'Asia/Tokyo',
+  'Europe/London',
+  'America/New_York',
+  'UTC'
+];
 const sessions = new Map();
 const SESSION_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
@@ -56,7 +66,7 @@ router.get('/', requireParentAuth(sessions), (req, res) => {
 
     const moodCounts = { '😊': 0, '🙂': 0, '😐': 0, '😔': 0, '😴': 0 };
     let streak = 0;
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getToday();
     const dates = new Set(allRecords.map(r => r.record_date));
 
     allRecords.forEach(r => {
@@ -101,12 +111,27 @@ router.get('/', requireParentAuth(sessions), (req, res) => {
       streak,
       totalCount: allRecords.length,
       last7,
-      last30
+      last30,
+      timezone: getTimezone(),
+      timezoneOptions: TIMEZONE_OPTIONS
     });
   } catch (err) {
     console.error(err);
     res.status(500).send('系統錯誤');
   }
+});
+
+router.get('/settings', requireParentAuth(sessions), (req, res) => {
+  res.json({ timezone: getTimezone() });
+});
+
+router.put('/settings', requireParentAuth(sessions), express.json(), (req, res) => {
+  const { timezone } = req.body || {};
+  if (timezone && typeof timezone === 'string') {
+    setTimezone(timezone);
+    return res.json({ success: true, timezone });
+  }
+  res.status(400).json({ error: 'Invalid timezone' });
 });
 
 router.get('/logout', (req, res) => {

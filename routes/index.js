@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
+const { getToday } = require('../lib/dateUtils');
 
 function getDayOfYear(dateStr) {
   const d = new Date(dateStr);
@@ -10,10 +11,13 @@ function getDayOfYear(dateStr) {
   return Math.floor(diff / oneDay);
 }
 
+const isDev = process.env.NODE_ENV !== 'production' || process.env.ENABLE_TEST_DATE_PICKER === 'true';
+
 router.get('/', async (req, res) => {
   try {
-    const today = new Date().toISOString().slice(0, 10);
-    const dayOfYear = getDayOfYear(today);
+    const today = getToday();
+    const useDate = isDev && req.query.date ? req.query.date : today;
+    const dayOfYear = getDayOfYear(useDate);
     const verse = db.prepare(
       'SELECT * FROM bible_verses WHERE day_of_year = ?'
     ).get(dayOfYear);
@@ -21,25 +25,30 @@ router.get('/', async (req, res) => {
     if (!verse) {
       return res.status(500).render('index', {
         verse: null,
-        today,
+        today: useDate,
+        record: null,
+        showDatePicker: isDev,
         error: '今日經文載入失敗'
       });
     }
 
     const record = db.prepare(
       'SELECT * FROM daily_records WHERE record_date = ?'
-    ).get(today);
+    ).get(useDate);
 
     res.render('index', {
       verse,
-      today,
-      record: record || null
+      today: useDate,
+      record: record || null,
+      showDatePicker: isDev
     });
   } catch (err) {
     console.error(err);
     res.status(500).render('index', {
       verse: null,
-      today: new Date().toISOString().slice(0, 10),
+      today: getToday(),
+      record: null,
+      showDatePicker: isDev,
       error: '系統錯誤'
     });
   }

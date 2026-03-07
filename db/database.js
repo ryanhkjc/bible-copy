@@ -17,6 +17,10 @@ function initSchema() {
   const schemaPath = path.join(__dirname, 'schema.sql');
   const schema = fs.readFileSync(schemaPath, 'utf8');
   db.exec(schema);
+  // Seed default timezone if not exists
+  db.prepare(
+    "INSERT OR IGNORE INTO app_settings (key, value) VALUES ('timezone', 'Asia/Hong_Kong')"
+  ).run();
 }
 
 initSchema();

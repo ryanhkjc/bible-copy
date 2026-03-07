@@ -121,14 +121,14 @@ body {
 }
 
 .verse-text {
-  font-size: 2.8rem;
-  line-height: 1.4;
+  font-size: 3rem;
+  line-height: 1.5;
   margin: 0 0 0.75rem;
   color: var(--text);
 }
 
 .verse-ref {
-  font-size: 1rem;
+  font-size: 1.8rem;
   color: var(--text-muted);
   margin: 0 0 0.5rem;
 }
@@ -305,6 +305,59 @@ body {
   padding: 1rem;
 }
 
+.test-date-picker {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.test-date-picker label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.test-date-picker input,
+.test-date-picker button {
+  margin-right: 0.5rem;
+  padding: 0.5rem;
+}
+
+.settings-section {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+}
+
+.settings-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+}
+
+.timezone-setting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.timezone-setting select {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+.settings-status {
+  font-size: 0.9rem;
+  color: var(--success);
+}
+
 /* ========== 家長登入 ========== */
 .login-page {
   display: flex;
@@ -433,6 +486,32 @@ body {
   color: var(--text-muted);
 }
 
+.test-date-picker {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+.test-date-picker label { margin-right: 0.5rem; }
+.test-date-picker input[type="date"] { margin-right: 0.5rem; padding: 0.4rem; }
+.test-date-picker button { padding: 0.4rem 0.75rem; cursor: pointer; }
+
+.settings-section {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+}
+.settings-section h2 { margin: 0 0 1rem; font-size: 1.2rem; }
+.timezone-setting { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.timezone-setting select { padding: 0.5rem; font-size: 1rem; }
+.timezone-setting button { padding: 0.5rem 1rem; cursor: pointer; }
+.settings-status { color: var(--success); font-size: 0.9rem; }
+
 .mood-section,
 .records-section {
   background: var(--bg-card);
@@ -482,7 +561,7 @@ body {
 
 @media (min-width: 600px) {
   .verse-text {
-    font-size: 2.8rem;
+    font-size: 3rem;
   }
 
   .welcome {

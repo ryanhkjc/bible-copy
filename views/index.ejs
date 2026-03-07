@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body class="child-page" data-verse-id="<%= verse ? verse.id : '' %>" data-today="<%= today %>">
+<body class="child-page" data-verse-id="<%= verse ? verse.id : '' %>" data-today="<%= today %>" data-selected-mood="<%= record && record.mood ? record.mood : '' %>" data-show-date-picker="<%= typeof showDatePicker !== 'undefined' && showDatePicker ? 'true' : 'false' %>">
   <header class="header">
     <a href="/parent/login" class="parent-link" title="家長登入">🔐</a>
     <div class="mascot mascot-float">
@@ -25,6 +25,13 @@
   </header>
 
   <main class="main">
+    <% if (typeof showDatePicker !== 'undefined' && showDatePicker) { %>
+      <section class="test-date-picker animate-in">
+        <label for="testDate">測試用：模擬日期</label>
+        <input type="date" id="testDate" value="<%= today %>">
+        <button type="button" id="testDateApply">套用</button>
+      </section>
+    <% } %>
     <% if (typeof error !=='undefined' && error) { %>
       <p class="error-msg">
         <%= error %>
@@ -47,7 +54,7 @@
           </p>
 
           <div class="mood-select">
-            <span class="mood-label">今日心情（必選）：</span>
+            <!--<span class="mood-label">今日心情（必選）：</span>-->
             <div class="mood-buttons">
               <button type="button" class="mood-btn" data-mood="😊" title="開心">😊</button>
               <button type="button" class="mood-btn" data-mood="🙂" title="不錯">🙂</button>

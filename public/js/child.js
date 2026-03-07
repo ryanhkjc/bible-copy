@@ -1,6 +1,20 @@
 (function () {
+  const showDatePicker = document.body.dataset.showDatePicker === 'true';
+  if (showDatePicker) {
+    const testDateApply = document.getElementById('testDateApply');
+    const testDate = document.getElementById('testDate');
+    if (testDateApply && testDate) {
+      testDateApply.addEventListener('click', function () {
+        const d = testDate.value;
+        if (d) window.location.href = '/?date=' + d;
+      });
+    }
+  }
+
   const verseId = document.body.dataset.verseId ? parseInt(document.body.dataset.verseId, 10) : null;
   const today = document.body.dataset.today || '';
+  const selectedMoodAttr = document.body.dataset.selectedMood || '';
+
   if (!verseId || !today) return;
 
   const saveBtn = document.getElementById('saveBtn');
@@ -10,10 +24,17 @@
   const achievementsEl = document.getElementById('achievements');
   const streakValue = document.getElementById('streakValue');
 
-  let selectedMood = null;
+  let selectedMood = selectedMoodAttr || null;
 
   function updateSaveButton() {
     saveBtn.disabled = !selectedMood;
+  }
+
+  // Pre-select mood from saved record
+  if (selectedMoodAttr) {
+    moodBtns.forEach(function (btn) {
+      if (btn.dataset.mood === selectedMoodAttr) btn.classList.add('selected');
+    });
   }
 
   moodBtns.forEach(function (btn) {

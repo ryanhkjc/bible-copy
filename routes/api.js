@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/database');
+const { getToday } = require('../lib/dateUtils');
 
 // Get day of year (1-365) from date string YYYY-MM-DD
 function getDayOfYear(dateStr) {
@@ -11,10 +12,10 @@ function getDayOfYear(dateStr) {
   return Math.floor(diff / oneDay);
 }
 
-// GET /api/verse/today - Get today's verse
+// GET /api/verse/today - Get today's verse (uses app timezone)
 router.get('/verse/today', (req, res) => {
   try {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getToday();
     const dayOfYear = getDayOfYear(today);
     const verse = db.prepare(
       'SELECT * FROM bible_verses WHERE day_of_year = ?'
@@ -92,7 +93,7 @@ function checkAndAwardAchievements(db, date) {
 router.post('/record', (req, res) => {
   try {
     const { record_date, verse_id, mood, journal, copied } = req.body;
-    const date = record_date || new Date().toISOString().slice(0, 10);
+    const date = record_date || getToday();
 
     const verse = db.prepare('SELECT id FROM bible_verses WHERE id = ?').get(verse_id);
     if (!verse) {
@@ -137,7 +138,7 @@ router.get('/stats', (req, res) => {
     ).all();
 
     let streak = 0;
-    const today = new Date().toISOString().slice(0, 10);
+    const today = getToday();
     const dates = new Set(records.map(r => r.record_date));
 
     if (dates.has(today)) {

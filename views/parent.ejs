@@ -14,6 +14,21 @@
   </header>
 
   <main class="parent-main">
+    <section class="settings-section">
+      <h2>應用程式設定</h2>
+      <div class="timezone-setting">
+        <label for="timezoneSelect">時區：</label>
+        <select id="timezoneSelect">
+          <% var tzList = (typeof timezoneOptions !== 'undefined' && Array.isArray(timezoneOptions)) ? timezoneOptions : ['Asia/Hong_Kong','Asia/Taipei','Asia/Shanghai','Asia/Tokyo','Europe/London','America/New_York','UTC']; %>
+          <% tzList.forEach(function(tz) { %>
+            <option value="<%= tz %>" <%= timezone === tz ? 'selected' : '' %>><%= tz %></option>
+          <% }); %>
+        </select>
+        <button type="button" id="saveTimezoneBtn">儲存時區</button>
+        <span id="timezoneStatus" class="settings-status"></span>
+      </div>
+    </section>
+
     <section class="stats-cards">
       <div class="stat-card">
         <span class="stat-value"><%= streak %></span>
