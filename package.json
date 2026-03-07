@@ -1,0 +1,19 @@
+{
+  "name": "bible-copy-calming",
+  "version": "1.0.0",
+  "description": "聖經抄寫平靜網站 - 為自閉症小朋友設計的每日聖經句子、日誌與獎勵應用",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node db/seed.js"
+  },
+  "keywords": ["bible", "calming", "autism-friendly"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^11.6.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1"
+  }
+}

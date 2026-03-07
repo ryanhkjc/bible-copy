@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>家長登入 - 聖經抄寫平靜</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-page">
+  <div class="login-box">
+    <h1>家長登入</h1>
+    <p class="login-hint">請輸入密碼以查看 Dashboard</p>
+    <% if (typeof error !== 'undefined' && error) { %>
+      <p class="error-msg"><%= error %></p>
+    <% } %>
+    <form method="POST" action="/parent/login" class="login-form">
+      <input type="password" name="password" placeholder="密碼" required autofocus class="password-input">
+      <button type="submit" class="login-btn">登入</button>
+    </form>
+    <a href="/" class="back-link">← 返回主頁</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>家長 Dashboard - 聖經抄寫平靜</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="parent-page">
+  <header class="parent-header">
+    <h1>家長 Dashboard</h1>
+    <a href="/parent/logout" class="logout-btn">登出</a>
+  </header>
+
+  <main class="parent-main">
+    <section class="stats-cards">
+      <div class="stat-card">
+        <span class="stat-value"><%= streak %></span>
+        <span class="stat-label">連續天數</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value"><%= totalCount %></span>
+        <span class="stat-label">總記錄數</span>
+      </div>
+    </section>
+
+    <section class="mood-section">
+      <h2>心情統計（全部）</h2>
+      <div class="chart-container">
+        <canvas id="moodChart"></canvas>
+      </div>
+    </section>
+
+    <section class="records-section">
+      <h2>聖經句子紀錄與日誌</h2>
+      <div class="records-table-wrap">
+        <table class="records-table">
+          <thead>
+            <tr>
+              <th>日期</th>
+              <th>經文</th>
+              <th>引用</th>
+              <th>心情</th>
+              <th>日誌</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% records.forEach(function(r) { %>
+              <tr>
+                <td><%= r.record_date %></td>
+                <td><%= r.verse_text %></td>
+                <td><%= r.reference %></td>
+                <td><%= r.mood || '-' %></td>
+                <td><%= r.journal || '-' %></td>
+              </tr>
+            <% }); %>
+            <% if (records.length === 0) { %>
+              <tr><td colspan="5">尚無記錄</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const moodData = {
+      labels: ['😊 開心', '🙂 不錯', '😐 普通', '😔 難過', '😴 想睡'],
+      datasets: [{
+        data: [
+          <%= moodCounts['😊'] %>,
+          <%= moodCounts['🙂'] %>,
+          <%= moodCounts['😐'] %>,
+          <%= moodCounts['😔'] %>,
+          <%= moodCounts['😴'] %>
+        ],
+        backgroundColor: ['#a8e6cf', '#dcedc1', '#ffd3b6', '#ffaaa5', '#b5e8e8']
+      }]
+    };
+  </script>
+  <script src="/js/parent.js"></script>
+</body>
+</html>
