@@ -5,6 +5,7 @@
 ## 功能
 
 - **兒童主頁**：每日一句約 20 字的聖經句子（平靜、安眠主題），可抄寫、記錄心情與日誌
+- **PWA（漸進式網頁應用）**：可安裝至手機或電腦主畫面，離線時仍可瀏覽已快取的內容
 - **心情與日誌持久化**：當日已儲存的記錄會自動顯示，隔日自動清空
 - **心情必選**：儲存前須選擇今日心情
 - **獎勵機制**：連續天數、成就徽章（連續 3/7/30 天、累積 50/100 句）
@@ -17,6 +18,7 @@
 - Node.js + Express
 - SQLite（better-sqlite3）
 - EJS 模板
+- PWA（Service Worker、Web App Manifest）
 - 繁體中文介面與經文（和合本）
 
 ## 本地部署
@@ -68,6 +70,28 @@ cd ~/Projects/bible-copy-calming && NODE_ENV=development node server.js
 - **兒童**：直接開啟 http://localhost:3000 使用主頁，無需登入
 - **家長**：前往 http://localhost:3000/parent/login 輸入密碼後查看 Dashboard
 
+## PWA 安裝與離線使用
+
+本網站支援 PWA，可安裝至裝置主畫面，並在離線時使用已快取的內容。
+
+### 安裝方式
+
+| 裝置／瀏覽器 | 操作方式 |
+|-------------|----------|
+| **Android（Chrome / Edge）** | 開啟網站後，點選瀏覽器選單 →「安裝應用程式」或「加入主畫面」 |
+| **iOS（Safari）** | 點選分享按鈕 →「加入主畫面」 |
+| **桌面版（Chrome / Edge）** | 網址列右側會顯示安裝圖示，點選即可安裝 |
+
+### 離線使用
+
+- 首次連線時，Service Worker 會快取靜態資源（CSS、JS、圖示）與首頁
+- 離線時會自動使用快取內容，可瀏覽主頁與已載入的經文
+- 若需儲存心情或日誌，需恢復網路連線後再操作
+
+### 更新快取
+
+若部署新版本後快取未更新，可修改 `public/sw.js` 中的 `CACHE_NAME`（例如改為 `bible-copy-calming-v2`），使用者下次造訪時會自動取得新版本。
+
 ## 專案結構
 
 ```
@@ -85,6 +109,11 @@ bible-copy-calming/
 ├── routes/
 ├── middleware/
 ├── public/
+│   ├── manifest.json   # PWA 設定
+│   ├── sw.js           # Service Worker
+│   ├── icons/          # PWA 圖示
+│   ├── css/
+│   └── js/
 └── views/
 ```
 
@@ -98,6 +127,15 @@ bible-copy-calming/
 | `ENABLE_TEST_DATE_PICKER` | 啟用測試用日期選擇器 | `false`（非 production 時自動啟用） |
 
 ## CHANGELOG
+
+### 2025-03-08
+
+- **PWA 支援**：新增漸進式網頁應用功能
+  - Web App Manifest（`manifest.json`）：應用名稱、主題色、圖示、standalone 顯示模式
+  - Service Worker（`sw.js`）：離線快取靜態資源與首頁，網路優先、離線回退策略
+  - PWA 圖示（`public/icons/icon.svg`）：與 mascot 風格一致的 SVG 圖示
+  - 全頁面加入 PWA meta 標籤（theme-color、apple-mobile-web-app-capable 等）與 Service Worker 註冊
+  - manifest 以正確 MIME 類型（`application/manifest+json`）提供
 
 ### 2025-03-07
 
