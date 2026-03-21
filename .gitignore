@@ -7,3 +7,4 @@ dist/
 data/ai_logs/
 .db
 .log
+data/bible.db

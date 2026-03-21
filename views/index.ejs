@@ -13,7 +13,9 @@
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body class="child-page" data-verse-id="<%= verse ? verse.id : '' %>" data-today="<%= today %>" data-selected-mood="<%= record && record.mood ? record.mood : '' %>" data-show-date-picker="<%= typeof showDatePicker !== 'undefined' && showDatePicker ? 'true' : 'false' %>">
+<body class="child-page" data-verse-id="<%= verse ? verse.id : '' %>" data-today="<%= today %>"
+  data-selected-mood="<%= record && record.mood ? record.mood : '' %>"
+  data-show-date-picker="<%= typeof showDatePicker !== 'undefined' && showDatePicker ? 'true' : 'false' %>">
   <header class="header">
     <a href="/parent/login" class="parent-link" title="家長登入">🔐</a>
     <div class="mascot mascot-float">
@@ -30,90 +32,95 @@
   </header>
 
   <main class="main">
-    <% if (typeof showDatePicker !== 'undefined' && showDatePicker) { %>
+    <% if (typeof showDatePicker !=='undefined' && showDatePicker) { %>
       <section class="test-date-picker animate-in">
         <label for="testDate">測試用：模擬日期</label>
         <input type="date" id="testDate" value="<%= today %>">
         <button type="button" id="testDateApply">套用</button>
+        <div class="test-reset-ai">
+          <button type="button" id="testResetAiBtn" class="test-reset-ai-btn">重設當日 AI（限額＋對話紀錄）</button>
+          <span class="test-reset-ai-hint">清除 SQLite 該日 <code>ai_usage</code> 與
+            <code>data/ai_logs/&lt;日期&gt;.md</code></span>
+        </div>
       </section>
-    <% } %>
-    <% if (typeof error !=='undefined' && error) { %>
-      <p class="error-msg">
-        <%= error %>
-      </p>
-      <% } else if (verse) { %>
-        <section class="verse-section animate-in">
-          <p class="verse-text">
-            <%= verse.verse_text %>
+      <% } %>
+        <% if (typeof error !=='undefined' && error) { %>
+          <p class="error-msg">
+            <%= error %>
           </p>
-          <p class="verse-ref">
-            <%= verse.reference %>
-          </p>
-          <!--<p class="copy-hint">抄在筆記本上吧！</p>-->
-        </section>
+          <% } else if (verse) { %>
+            <section class="verse-section animate-in">
+              <p class="verse-text">
+                <%= verse.verse_text %>
+              </p>
+              <p class="verse-ref">
+                <%= verse.reference %>
+              </p>
+              <!--<p class="copy-hint">抄在筆記本上吧！</p>-->
+            </section>
 
-        <section class="record-section animate-in animate-delay-1">
-          <h2>今日心情</h2>
-          <p class="today-date">
-            <%= today %>
-          </p>
+            <section class="record-section animate-in animate-delay-1">
+              <h2>今日心情</h2>
+              <p class="today-date">
+                <%= today %>
+              </p>
 
-          <div class="mood-select">
-            <!--<span class="mood-label">今日心情（必選）：</span>-->
-            <div class="mood-buttons">
-              <button type="button" class="mood-btn" data-mood="😊" title="開心">😊</button>
-              <button type="button" class="mood-btn" data-mood="🙂" title="不錯">🙂</button>
-              <button type="button" class="mood-btn" data-mood="😐" title="普通">😐</button>
-              <button type="button" class="mood-btn" data-mood="😔" title="難過">😔</button>
-              <button type="button" class="mood-btn" data-mood="😴" title="想睡">😴</button>
-            </div>
-          </div>
+              <div class="mood-select">
+                <!--<span class="mood-label">今日心情（必選）：</span>-->
+                <div class="mood-buttons">
+                  <button type="button" class="mood-btn" data-mood="😊" title="開心">😊</button>
+                  <button type="button" class="mood-btn" data-mood="🙂" title="不錯">🙂</button>
+                  <button type="button" class="mood-btn" data-mood="😐" title="普通">😐</button>
+                  <button type="button" class="mood-btn" data-mood="😔" title="難過">😔</button>
+                  <button type="button" class="mood-btn" data-mood="😴" title="想睡">😴</button>
+                </div>
+              </div>
 
-          <div class="journal-input">
-            <label for="journal">今日日誌（選填）：</label>
-            <textarea id="journal" rows="3"
-              placeholder="寫下今天發生的事..."><%= record && record.journal ? record.journal : '' %></textarea>
-          </div>
+              <div class="journal-input">
+                <label for="journal">今日日誌（選填）：</label>
+                <textarea id="journal" rows="3"
+                  placeholder="寫下今天發生的事..."><%= record && record.journal ? record.journal : '' %></textarea>
+              </div>
 
-          <button type="button" class="save-btn" id="saveBtn">儲存今日記錄</button>
-          <p class="save-status" id="saveStatus"></p>
-        </section>
+              <button type="button" class="save-btn" id="saveBtn">儲存今日記錄</button>
+              <p class="save-status" id="saveStatus"></p>
+            </section>
 
-        <section class="ai-chat-section animate-in animate-delay-1" id="aiChatRoot" aria-label="AI 小助手對話">
-          <h2>傾下計（小助手）</h2>
-          <p class="ai-safety-note">若然好唔開心或頂唔順，一定要同家長講。小助手只係幫手，唔係真人醫生。</p>
-          <div class="ai-chat-thread" id="aiMessages" aria-live="polite"></div>
-          <div class="ai-input-row">
-            <label for="aiInput" class="sr-only">輸入訊息</label>
-            <textarea id="aiInput" rows="2" placeholder="打你想講嘅說話..."></textarea>
-            <button type="button" class="ai-send-btn" id="aiSendBtn">送出</button>
-          </div>
-          <p class="ai-chat-status" id="aiChatStatus"></p>
-        </section>
+            <section class="ai-chat-section animate-in animate-delay-1" id="aiChatRoot" aria-label="AI 小助手對話">
+              <h2>同天使傾下計</h2>
+              <p class="ai-safety-note">若然好唔開心或頂唔順，一定要同爸爸媽媽或者老師講。</p>
+              <div class="ai-chat-thread" id="aiMessages" aria-live="polite"></div>
+              <div class="ai-input-row">
+                <label for="aiInput" class="sr-only">輸入訊息</label>
+                <textarea id="aiInput" rows="2" placeholder="打你想講嘅說話..."></textarea>
+                <button type="button" class="ai-send-btn" id="aiSendBtn">送出</button>
+              </div>
+              <p class="ai-chat-status" id="aiChatStatus"></p>
+            </section>
 
-        <section class="rewards-section animate-in animate-delay-2">
-          <h2>我的獎勵</h2>
-          <div class="streak-display">
-            <span class="streak-label">連續天數：</span>
-            <span class="streak-value" id="streakValue">-</span>
-          </div>
-          <div class="achievements" id="achievements">
-            <span class="badge" data-achievement="streak_3" title="連續 3 天">⭐</span>
-            <span class="badge" data-achievement="streak_7" title="連續 7 天">🏅</span>
-            <span class="badge" data-achievement="streak_30" title="連續 30 天">🏆</span>
-            <span class="badge" data-achievement="total_50" title="累積 50 句">🎖️</span>
-            <span class="badge" data-achievement="total_100" title="累積 100 句">🌟</span>
-          </div>
-        </section>
-        <% } else { %>
-          <p class="error-msg">今日經文載入失敗，請稍後再試。</p>
-          <% } %>
+            <section class="rewards-section animate-in animate-delay-2">
+              <h2>我的獎勵</h2>
+              <div class="streak-display">
+                <span class="streak-label">連續天數：</span>
+                <span class="streak-value" id="streakValue">-</span>
+              </div>
+              <div class="achievements" id="achievements">
+                <span class="badge" data-achievement="streak_3" title="連續 3 天">⭐</span>
+                <span class="badge" data-achievement="streak_7" title="連續 7 天">🏅</span>
+                <span class="badge" data-achievement="streak_30" title="連續 30 天">🏆</span>
+                <span class="badge" data-achievement="total_50" title="累積 50 句">🎖️</span>
+                <span class="badge" data-achievement="total_100" title="累積 100 句">🌟</span>
+              </div>
+            </section>
+            <% } else { %>
+              <p class="error-msg">今日經文載入失敗，請稍後再試。</p>
+              <% } %>
   </main>
 
   <script src="/js/child.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      navigator.serviceWorker.register('/sw.js').catch(() => { });
     }
   </script>
 </body>

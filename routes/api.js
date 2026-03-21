@@ -1,7 +1,12 @@
 const express = require('express');
+const fs = require('fs');
 const router = express.Router();
 const db = require('../db/database');
 const { getToday } = require('../lib/dateUtils');
+const { logFilePath } = require('../lib/aiChatLog');
+
+const isTestEnv =
+  process.env.NODE_ENV !== 'production' || process.env.ENABLE_TEST_DATE_PICKER === 'true';
 
 // Get day of year (1-365) from date string YYYY-MM-DD
 function getDayOfYear(dateStr) {
@@ -178,6 +183,33 @@ router.get('/stats', (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/**
+ * 測試環境專用：重設指定日期的 AI 對話限額（SQLite ai_usage）及當日 Markdown 紀錄檔
+ */
+router.post('/dev/reset-ai', express.json(), (req, res) => {
+  try {
+    if (!isTestEnv) {
+      return res.status(403).json({ error: 'forbidden', message: '僅測試環境可用' });
+    }
+    const date = (req.body && req.body.date) || '';
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return res.status(400).json({
+        error: 'bad_request',
+        message: '需要有效的 date (YYYY-MM-DD)'
+      });
+    }
+    db.prepare('DELETE FROM ai_usage WHERE record_date = ?').run(date);
+    const p = logFilePath(date);
+    if (fs.existsSync(p)) {
+      fs.unlinkSync(p);
+    }
+    res.json({ success: true, date });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'server' });
   }
 });
 

@@ -12,7 +12,7 @@
 - **家長 Dashboard**：經文紀錄、日誌、心情統計、連續天數、時區設定（需密碼登入）
 - **AI 小助手（Cloudflare Workers AI）**：兒童頁單一對話（信仰與日常已合併）；介面為頭像＋氣泡，當日對話經 `GET /api/ai/today` 還原，重新整理仍保留。API 金鑰僅存於伺服器 `.env`。每日限制小朋友「發話則數」（預設 25，可調），達上限後自動產生「今日小結」完場（鼓勵＋安心睡覺提示）。對話寫入 `data/ai_logs/YYYY-MM-DD.md`（Markdown）。家長可於「AI 對話紀錄」頁檢視檔案內容
 - **時區設定**：家長可於 Dashboard 選擇與更新應用程式時區，影響「今日」日期計算
-- **測試用日期選擇器**：非生產環境（`NODE_ENV !== production` 或 `ENABLE_TEST_DATE_PICKER=true`）下，兒童主頁顯示日期選擇器，可模擬不同日期測試經文、心情、日誌功能
+- **測試用日期選擇器**：非生產環境（`NODE_ENV !== production` 或 `ENABLE_TEST_DATE_PICKER=true`）下，兒童主頁顯示日期選擇器，可模擬不同日期測試經文、心情、日誌功能；同區塊可**重設當日 AI**（`POST /api/dev/reset-ai`）：刪除該日 `ai_usage` 列與 `data/ai_logs/<日期>.md`，生產環境會回 403
 
 ## 技術
 

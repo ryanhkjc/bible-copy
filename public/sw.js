@@ -1,5 +1,5 @@
 /* 聖經抄寫平靜 - Service Worker */
-const CACHE_NAME = 'bible-copy-calming-v2';
+const CACHE_NAME = 'bible-copy-calming-v3';
 const STATIC_ASSETS = [
   '/',
   '/css/style.css',

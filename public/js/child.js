@@ -9,6 +9,43 @@
         if (d) window.location.href = '/?date=' + d;
       });
     }
+    const testResetAiBtn = document.getElementById('testResetAiBtn');
+    if (testResetAiBtn) {
+      testResetAiBtn.addEventListener('click', function () {
+        var pageDate = document.body.dataset.today || '';
+        if (!pageDate) return;
+        if (
+          !window.confirm(
+            '確定重設「' + pageDate + '」的 AI 對話限額與當日對話紀錄？\n（只影響測試用，無法還原）'
+          )
+        ) {
+          return;
+        }
+        testResetAiBtn.disabled = true;
+        fetch('/api/dev/reset-ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ date: pageDate })
+        })
+          .then(function (r) {
+            return r.json().then(function (data) {
+              return { ok: r.ok, data: data };
+            });
+          })
+          .then(function (res) {
+            if (res.ok && res.data.success) {
+              window.location.reload();
+            } else {
+              window.alert((res.data && res.data.message) || '重設失敗');
+              testResetAiBtn.disabled = false;
+            }
+          })
+          .catch(function () {
+            window.alert('網絡錯誤');
+            testResetAiBtn.disabled = false;
+          });
+      });
+    }
   }
 
   const verseId = document.body.dataset.verseId ? parseInt(document.body.dataset.verseId, 10) : null;
