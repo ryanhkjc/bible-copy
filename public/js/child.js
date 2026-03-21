@@ -140,7 +140,7 @@
   });
 })();
 
-var AI_CLOSING_USER_MARKER = '（今日傾偈時間已滿，以下係今日小結。）';
+var AI_CLOSING_USER_MARKER = '（今日傾住咁多先啦，以下係今日小結。）';
 
 function initAiChatIfPresent() {
   var root = document.getElementById('aiChatRoot');
