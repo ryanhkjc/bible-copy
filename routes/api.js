@@ -181,4 +181,6 @@ router.get('/stats', (req, res) => {
   }
 });
 
+router.use(require('./ai'));
+
 module.exports = router;

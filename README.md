@@ -10,6 +10,7 @@
 - **心情必選**：儲存前須選擇今日心情
 - **獎勵機制**：連續天數、成就徽章（連續 3/7/30 天、累積 50/100 句）
 - **家長 Dashboard**：經文紀錄、日誌、心情統計、連續天數、時區設定（需密碼登入）
+- **AI 小助手（Cloudflare Workers AI）**：兒童頁單一對話（信仰與日常已合併）；介面為頭像＋氣泡，當日對話經 `GET /api/ai/today` 還原，重新整理仍保留。API 金鑰僅存於伺服器 `.env`。每日限制小朋友「發話則數」（預設 25，可調），達上限後自動產生「今日小結」完場（鼓勵＋安心睡覺提示）。對話寫入 `data/ai_logs/YYYY-MM-DD.md`（Markdown）。家長可於「AI 對話紀錄」頁檢視檔案內容
 - **時區設定**：家長可於 Dashboard 選擇與更新應用程式時區，影響「今日」日期計算
 - **測試用日期選擇器**：非生產環境（`NODE_ENV !== production` 或 `ENABLE_TEST_DATE_PICKER=true`）下，兒童主頁顯示日期選擇器，可模擬不同日期測試經文、心情、日誌功能
 
@@ -37,7 +38,7 @@ npm install
 cp .env.example .env
 ```
 
-編輯 `.env`，至少設定 `PARENT_PASSWORD`（家長密碼）。
+編輯 `.env`，至少設定 `PARENT_PASSWORD`（家長密碼）。若要用 AI 小助手，請一併設定 Cloudflare 欄位（見下表）。
 
 ### 3. 匯入聖經經文（首次啟動）
 
@@ -68,7 +69,7 @@ cd ~/Projects/bible-copy-calming && NODE_ENV=development node server.js
 ### 5. 使用方式
 
 - **兒童**：直接開啟 http://localhost:3000 使用主頁，無需登入
-- **家長**：前往 http://localhost:3000/parent/login 輸入密碼後查看 Dashboard
+- **家長**：前往 http://localhost:3000/parent/login 輸入密碼後查看 Dashboard；AI 紀錄在 http://localhost:3000/parent/ai-logs
 
 ## PWA 安裝與離線使用
 
@@ -105,7 +106,8 @@ bible-copy-calming/
 │   └── database.js     # SQLite 連線
 ├── data/
 │   ├── bible.db        # SQLite 資料庫（執行 seed 後產生）
-│   └── bible_verses.json
+│   ├── bible_verses.json
+│   └── ai_logs/        # AI 對話 Markdown（執行時自動建立，已 .gitignore）
 ├── routes/
 ├── middleware/
 ├── public/
@@ -126,7 +128,33 @@ bible-copy-calming/
 | `PORT` | 伺服器埠號 | `3000` |
 | `ENABLE_TEST_DATE_PICKER` | 啟用測試用日期選擇器 | `false`（非 production 時自動啟用） |
 
+### Cloudflare Workers AI（選填）
+
+1. 登入 [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Workers AI** → **Use REST API**。
+2. 複製 **Account ID**，並建立 **Workers AI API Token**（需含 Workers AI 讀寫權限）。
+3. 在 `.env` 填入：
+
+| 變數 | 說明 |
+|------|------|
+| `CF_ACCOUNT_ID` | Cloudflare 帳戶 ID |
+| `CF_API_TOKEN` | Workers AI 用 API Token（勿提交到 git） |
+| `AI_MODEL` | 模型名稱，須與[官方模型列表](https://developers.cloudflare.com/workers-ai/models/)一致，預設 `@cf/meta/llama-3.2-3b-instruct` |
+| `AI_MAX_TOKENS` | 單次回覆 token 上限（預設 512） |
+| `AI_MAX_USER_TURNS_PER_DAY` | 每日「小朋友發話」則數上限（預設 25） |
+| `AI_CONTEXT_MAX_CHARS` | 從 Markdown 日誌帶入模型之字元上限（預設 3500） |
+| `AI_MAX_USER_MESSAGE_CHARS` | 單則使用者訊息字元上限（預設 2000） |
+
+**用量與私隱：** Workers AI 免費額度以 [Neurons／日](https://developers.cloudflare.com/workers-ai/platform/pricing/) 計，超限需付費方案。對話紀錄僅存本機 `data/ai_logs/`，預設已列入 `.gitignore`；內容可能含兒童情緒描述，請妥善保管伺服器與備份。
+
 ## CHANGELOG
+
+### 2026-03-21
+
+- **AI 小助手改版**：合併信仰／日常為單一對話；`GET /api/ai/today` 還原當日對話；頭像＋氣泡 UI；不顯示剩餘次數；達每日上限後 `POST /api/ai/closing` 產生今日小結與晚安提示；`ai_usage.closing_sent`
+
+### 2025-03-21
+
+- **Workers AI 整合**：`POST /api/ai/chat`、`GET /api/ai/status`；`lib/cloudflareAi.js`、`lib/aiPrompts.js`、`lib/aiChatLog.js`；SQLite `ai_usage`；家長「AI 對話紀錄」頁；兒童頁雙模式聊天 UI 與每日則數限制
 
 ### 2025-03-08
 

@@ -25,4 +25,30 @@ function initSchema() {
 
 initSchema();
 
+// 舊資料庫可能早於 ai_usage；確保表存在
+function ensureAiUsageTable() {
+  try {
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS ai_usage (
+        record_date TEXT PRIMARY KEY,
+        user_turns INTEGER NOT NULL DEFAULT 0
+      );
+    `);
+  } catch (e) {
+    console.error('ensureAiUsageTable:', e);
+  }
+}
+ensureAiUsageTable();
+
+function ensureAiUsageClosingSentColumn() {
+  try {
+    db.exec(`ALTER TABLE ai_usage ADD COLUMN closing_sent INTEGER NOT NULL DEFAULT 0`);
+  } catch (e) {
+    if (!/duplicate column name/i.test(String(e && e.message))) {
+      console.error('ensureAiUsageClosingSentColumn:', e);
+    }
+  }
+}
+ensureAiUsageClosingSentColumn();
+
 module.exports = db;

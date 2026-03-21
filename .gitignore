@@ -3,3 +3,7 @@ dist/
 .env
 .DS_Store
 .next/
+# AI 對話紀錄（含兒童情緒內容，勿提交）
+data/ai_logs/
+.db
+.log

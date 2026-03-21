@@ -142,4 +142,37 @@ router.get('/logout', (req, res) => {
   res.redirect('/parent/login');
 });
 
+router.get('/ai-logs', requireParentAuth(sessions), (req, res) => {
+  try {
+    const { listLogFiles } = require('../lib/aiChatLog');
+    const files = listLogFiles(120).map((f) => f.replace(/\.md$/, ''));
+    res.render('ai_logs', { files, selected: null, content: null, empty: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('系統錯誤');
+  }
+});
+
+router.get('/ai-logs/:date', requireParentAuth(sessions), (req, res) => {
+  try {
+    const date = req.params.date;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return res.redirect('/parent/ai-logs');
+    }
+    const { listLogFiles, readLogContent } = require('../lib/aiChatLog');
+    const files = listLogFiles(120).map((f) => f.replace(/\.md$/, ''));
+    const raw = readLogContent(date);
+    const empty = raw === null || raw === '';
+    res.render('ai_logs', {
+      files,
+      selected: date,
+      content: empty ? '' : raw,
+      empty
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('系統錯誤');
+  }
+});
+
 module.exports = router;

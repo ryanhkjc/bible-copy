@@ -1,7 +1,7 @@
 {
   "name": "聖經抄寫平靜",
   "short_name": "聖經抄寫",
-  "description": "為自閉症小朋友設計的每日聖經句子、日誌與獎勵應用",
+  "description": "為小朋友設計的每日聖經句子、日誌與獎勵應用",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f0f4f8",

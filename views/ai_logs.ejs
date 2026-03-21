@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#63b3ed">
+  <title>AI 對話紀錄 - 家長</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="parent-page">
+  <header class="parent-header">
+    <h1>AI 對話紀錄</h1>
+    <nav class="parent-header-nav">
+      <a href="/parent" class="logout-btn">Dashboard</a>
+      <a href="/parent/ai-logs" class="logout-btn">列表</a>
+      <a href="/parent/logout" class="logout-btn">登出</a>
+    </nav>
+  </header>
+
+  <main class="parent-main">
+    <p class="ai-safety-note">對話以 Markdown 檔存於伺服器 <code>data/ai_logs/</code>（已加入 .gitignore）。請勿公開分享內容。</p>
+
+    <div class="ai-logs-layout">
+      <nav aria-label="日期列表">
+        <ul class="ai-logs-list">
+          <% files.forEach(function(d) { %>
+            <li>
+              <a href="/parent/ai-logs/<%= d %>" class="<%= selected === d ? 'active' : '' %>"><%= d %></a>
+            </li>
+          <% }); %>
+          <% if (files.length === 0) { %>
+            <li>尚未有紀錄</li>
+          <% } %>
+        </ul>
+      </nav>
+      <section>
+        <% if (selected) { %>
+          <% if (empty) { %>
+            <p>此日尚無紀錄。</p>
+          <% } else { %>
+            <pre class="ai-log-pre"><%= content %></pre>
+          <% } %>
+        <% } else { %>
+          <p>請從左側選擇日期，或直接查看最近檔案。</p>
+        <% } %>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

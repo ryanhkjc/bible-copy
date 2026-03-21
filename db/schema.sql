@@ -30,6 +30,13 @@ CREATE TABLE IF NOT EXISTS rewards (
 CREATE INDEX IF NOT EXISTS idx_daily_records_date ON daily_records(record_date);
 CREATE INDEX IF NOT EXISTS idx_daily_records_verse ON daily_records(verse_id);
 
+-- 每日 AI 對話：小朋友 user 訊息則數（全模式合計）
+CREATE TABLE IF NOT EXISTS ai_usage (
+  record_date TEXT PRIMARY KEY,
+  user_turns INTEGER NOT NULL DEFAULT 0,
+  closing_sent INTEGER NOT NULL DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS app_settings (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL

@@ -79,6 +79,18 @@
           <p class="save-status" id="saveStatus"></p>
         </section>
 
+        <section class="ai-chat-section animate-in animate-delay-1" id="aiChatRoot" aria-label="AI 小助手對話">
+          <h2>傾下計（小助手）</h2>
+          <p class="ai-safety-note">若然好唔開心或頂唔順，一定要同家長講。小助手只係幫手，唔係真人醫生。</p>
+          <div class="ai-chat-thread" id="aiMessages" aria-live="polite"></div>
+          <div class="ai-input-row">
+            <label for="aiInput" class="sr-only">輸入訊息</label>
+            <textarea id="aiInput" rows="2" placeholder="打你想講嘅說話..."></textarea>
+            <button type="button" class="ai-send-btn" id="aiSendBtn">送出</button>
+          </div>
+          <p class="ai-chat-status" id="aiChatStatus"></p>
+        </section>
+
         <section class="rewards-section animate-in animate-delay-2">
           <h2>我的獎勵</h2>
           <div class="streak-display">
