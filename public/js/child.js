@@ -208,6 +208,7 @@ function initAiChatIfPresent() {
         String(list[i - 1].content || '').trim() === AI_CLOSING_USER_MARKER;
       appendChatRow(msg.role, msg.content, { closing: isClosingAssistant });
     }
+    messagesEl.classList.toggle('ai-chat-thread--empty', messagesEl.children.length === 0);
     scrollThread();
   }
 

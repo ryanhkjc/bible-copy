@@ -623,6 +623,7 @@ body {
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--border);
+  animation: fadeInUp 0.6s ease-out 0.15s both;
 }
 
 .ai-chat-section h2 {
@@ -645,6 +646,10 @@ body {
   border-radius: 0.85rem;
   border: 1px solid var(--border);
   margin-bottom: 0.75rem;
+}
+
+.ai-chat-thread--empty {
+  display: none;
 }
 
 .ai-chat-row {
